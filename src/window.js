@@ -13,17 +13,17 @@ module.exports = function inject(bot, options) {
         })
     }
 
-    bot.pattern.window.getTranslatedWindowTitle = (window) => ChatMessage.fromNotch(window.title).toString()
+    bot.pattern.window.getTranslatedTitle = (window) => ChatMessage.fromNotch(window.title).toString()
 
     bot.on('windowOpen', (window) => {
-        const title = bot.pattern.window.getTranslatedWindowTitle(window)
+        const title = bot.pattern.window.getTranslatedTitle(window)
         const windowPatterns = bot.pattern.window.patterns
         Object.keys(windowPatterns).forEach(windowPatternName => {
             const windowPattern = windowPatterns[windowPatternName]
 
-            const windowTitleMatch = title.match(windowPattern)
+            const windowTitleMatch = bot.pattern.match(title, windowPattern)
             if (windowTitleMatch) {
-                bot.emit('windowOpen:' + windowPatternName, window, windowTitleMatch.splice(1))
+                bot.emit('windowOpen:' + windowPatternName, window, windowTitleMatch)
             }
         })
     })

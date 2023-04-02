@@ -3,45 +3,34 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.item = {}
 
-    bot.pattern.item.matchesPattern = (itemPattern, stack) => {
+    bot.pattern.item.match = (itemPattern, stack) => {
         const { title: titleRegex, lore: loreRegex } = itemPattern
         const stackName = stack.customName
         const stackLore = stack.customLore
-        let matchesName = true
-        if (titleRegex) {
-            matchesName = stackName ? titleRegex.test(stackName.replace(/§./g, '')) : false
-        }
-        let matchesLore = true
-        if (loreRegex?.length) {
-            for (let i = 0; i < loreRegex.length; i++) {
-                matchesLore = stackLore[i] ? loreRegex[i].test(stackLore[i].replace(/§./g, '')) : false
-                if (!matchesLore) break
-            }
-        }
-        return matchesName && matchesLore
-    }
 
-    bot.pattern.item.getPatternMatches = (itemPattern, stack) => {
-        const { title: titleRegex, lore: loreRegex } = itemPattern
-        const stackName = stack.customName
-        const stackLore = stack.customLore
-        const matches = {
+        let matchesPattern = true
+        const patternMatches = {
             titleMatch: null,
             loreMatches: null
         }
-        if (titleRegex && stackName) {
-            matches.titleMatch = stackName.replace(/§./g, '').match(titleRegex).splice(1)
-        }
-        if (loreRegex) {
-            matches.loreMatches = []
-            for (let i = 0; i < loreRegex.length; i++) {
-                matches.loreMatches[i] = stackLore.replace(/§./g, '').match(loreRegex[i]).splice(1)
+        if (titleRegex) {
+            const titleMatch = bot.pattern.match(stackName, titleRegex)
+            if (titleMatch) {
+                matches.titleMatch = titleMatch
+            } else {
+                matchesPattern = false
             }
         }
-        return matches
+        const loreMatches = bot.pattern.matchArray(loreRegex, stackLore)
+        if (loreMatches) {
+            patternMatches.loreMatches = loreMatches
+        } else {
+            matchesPattern = false
+        }
+        return matchesPattern ? patternMatches : null
     }
 
-    bot.pattern.item.findMatchingIn = (window, itemPattern) => {
-        return window.slots.find(e => bot.pattern.item.matchesPattern(e, itemPattern))
+    bot.pattern.item.findInWindow = (window, itemPattern) => {
+        return window.slots.find(e => bot.pattern.item.match(e, itemPattern))
     }
 }

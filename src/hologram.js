@@ -44,31 +44,6 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.hologram.extractText = (hologramEntities) => hologramEntities.map(bot.pattern.hologram.getNametag)
 
-    bot.pattern.hologram.matchesPattern = (hologramTextArray, hologramPattern) => {
-        if (!(hologramPattern instanceof Array)) {
-            hologramPattern = [hologramPattern]
-        }
-
-        let matches = true
-        if (hologramPattern?.length) {
-            for (let i = 0; i < hologramPattern.length; i++) {
-                matches = hologramTextArray[i] ? hologramPattern[i].test(hologramTextArray[i].replace(/§./g, '')) : false
-                if (!matches) break
-            }
-        }
-        return matches
-    }
-
-    bot.pattern.hologram.getPatternMatches = (hologramTextArray, hologramPattern) => {
-        matches = []
-        if (hologramPattern) {
-            for (let i = 0; i < hologramPattern.length; i++) {
-                matches[i] = hologramTextArray[i].replace(/§./g, '').match(hologramPattern[i]).splice(1)
-            }
-        }
-        return matches
-    }
-
     bot.pattern.hologram.getHolograms = (point) => 
         Object.values(bot.entities)
         .filter(bot.pattern.hologram.isHologram)
@@ -83,7 +58,7 @@ module.exports = function inject(bot, options) {
 
             const stackedHologramText = bot.pattern.hologram.extractText(stackedHologram)
 
-            if (bot.pattern.hologram.matchesPattern(stackedHologramText, hologramPattern)) {
+            if (bot.pattern.matchArray(stackedHologramText, hologramPattern)) {
                 return stackedHologramText
             }
         }
