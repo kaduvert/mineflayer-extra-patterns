@@ -3,7 +3,7 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.item = {}
 
-    bot.pattern.item.match = (itemPattern, stack) => {
+    bot.pattern.item.match = (stack, itemPattern) => {
         const { title: titleRegex, lore: loreRegex } = itemPattern
         const stackName = stack.customName
         const stackLore = stack.customLore

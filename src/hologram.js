@@ -50,7 +50,7 @@ module.exports = function inject(bot, options) {
         // sort by closest distance
         .sort((a, b) => point.distanceTo(a.position) - point.distanceTo(b.position))
 
-    bot.pattern.hologram.getMatchingHologram = (hologramPattern, point = bot.entity.position) => {
+    bot.pattern.hologram.findMatching = (pattern, point = bot.entity.position) => {
         const loadedHolograms = bot.pattern.hologram.getHolograms(point)
         const stackedHolograms = bot.pattern.hologram.group(loadedHolograms)
 
@@ -58,7 +58,7 @@ module.exports = function inject(bot, options) {
 
             const stackedHologramText = bot.pattern.hologram.extractText(stackedHologram)
 
-            if (bot.pattern.matchArray(stackedHologramText, hologramPattern)) {
+            if (bot.pattern.matchArray(stackedHologramText, pattern)) {
                 return stackedHologramText
             }
         }
