@@ -7,9 +7,9 @@ module.exports = function inject(bot, options) {
         patterns: {}
     }
 
-    bot.pattern.window.loadPatterns = (windowPatterns, patternHead) => {
+    bot.pattern.window.loadPatterns = (windowPatterns, eventIdentifier) => {
         Object.keys(windowPatterns).forEach(windowPatternName => {
-            bot.pattern.window.patterns[patternHead + bot.patternHeadNameSeparator + windowPatternName] = windowPatterns[windowPatternName]
+            bot.pattern.window.patterns[eventIdentifier + bot.patternHeadNameSeparator + windowPatternName] = windowPatterns[windowPatternName]
         })
     }
 
