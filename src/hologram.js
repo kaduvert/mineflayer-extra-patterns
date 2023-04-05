@@ -44,11 +44,13 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.hologram.extractText = (hologramEntities) => hologramEntities.map(bot.pattern.hologram.getNametag)
 
-    bot.pattern.hologram.getHolograms = (point) => 
+    bot.pattern.hologram.getHolograms = (point) =>
         Object.values(bot.entities)
-        .filter(bot.pattern.hologram.isHologram)
-        // sort by closest distance
-        .sort((a, b) => point.distanceTo(a.position) - point.distanceTo(b.position))
+            .filter(bot.pattern.hologram.isHologram)
+            // sort by closest distance
+            .sort((a, b) => point.distanceTo(a.position) - point.distanceTo(b.position))
+
+    bot.pattern.hologram.match = (stackedHologramText, hologramPattern) => bot.pattern.matchArray(stackedHologramText, hologramPattern)
 
     bot.pattern.hologram.findMatching = (pattern, point = bot.entity.position) => {
         const loadedHolograms = bot.pattern.hologram.getHolograms(point)
@@ -58,7 +60,7 @@ module.exports = function inject(bot, options) {
 
             const stackedHologramText = bot.pattern.hologram.extractText(stackedHologram)
 
-            if (bot.pattern.matchArray(stackedHologramText, pattern)) {
+            if (bot.pattern.hologram.match(stackedHologramText, pattern)) {
                 return stackedHologramText
             }
         }

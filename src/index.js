@@ -17,7 +17,7 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.match = (str, reg) => bot.pattern.clearColorCodes(str)?.match(reg)?.splice(1)
 
-    bot.pattern.matchArray = (regArr, matchArr) => {
+    bot.pattern.matchArray = (matchArr, regArr) => {
         if (!(regArr instanceof Array)) {
             regArr = [regArr]
         }
