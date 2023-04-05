@@ -26,6 +26,10 @@ module.exports = function inject(bot, options) {
         const regArrMatches = []
         if (regArr?.length) {
             for (let i = 0; i < regArr.length; i++) {
+                if (!regArr[i]) {
+                    regArrMatches[i] = matchArr[i]
+                    continue
+                }
                 const regArrMatch = bot.pattern.match(matchArr[i], regArr[i])
                 if (regArrMatch) {
                     regArrMatches[i] = regArrMatch
