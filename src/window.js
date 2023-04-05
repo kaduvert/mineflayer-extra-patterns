@@ -7,13 +7,9 @@ module.exports = function inject(bot, options) {
         patterns: {}
     }
 
-    bot.pattern.window.loadPatterns = (windowPatterns, eventIdentifier) => {
-        Object.keys(windowPatterns).forEach(windowPatternName => {
-            bot.pattern.window.patterns[eventIdentifier + bot.patternHeadNameSeparator + windowPatternName] = windowPatterns[windowPatternName]
-        })
-    }
-
     bot.pattern.window.getTranslatedTitle = (window) => ChatMessage.fromNotch(window.title).toString()
+
+    bot.pattern.window.match = (title, windowPattern) => bot.pattern.match(title, windowPattern)
 
     bot.on('windowOpen', (window) => {
         const title = bot.pattern.window.getTranslatedTitle(window)
@@ -21,7 +17,7 @@ module.exports = function inject(bot, options) {
         Object.keys(windowPatterns).forEach(windowPatternName => {
             const windowPattern = windowPatterns[windowPatternName]
 
-            const windowTitleMatch = bot.pattern.match(title, windowPattern)
+            const windowTitleMatch = bot.pattern.window.match(title, windowPattern)
             if (windowTitleMatch) {
                 bot.emit('windowOpen:' + windowPatternName, window, windowTitleMatch)
             }
