@@ -1,4 +1,8 @@
 module.exports = function inject(bot, options) {
+    const defaultVerticalHologramSpacing = 0.25
+    const maxVerticalHologramSpacing = defaultVerticalHologramSpacing + 0.15
+    const maxXZSpacing = 0.1
+
     bot.pattern.hologram = {}
 
     bot.pattern.hologram.hasNametag = (entity) => Boolean(entity.metadata?.[2])
@@ -6,6 +10,8 @@ module.exports = function inject(bot, options) {
     bot.pattern.hologram.getNametag = (entity) => entity.metadata[2]
 
     bot.pattern.hologram.isHologram = (entity) => entity.objectType === 'Armor Stand' && bot.pattern.hologram.hasNametag(entity)
+
+    bot.pattern.hologram.getPosition = (entity) => entity.position.offset(0, entity.position.height, 0)
 
     bot.pattern.hologram.group = (hologramEntities) => {
         const stackedHolograms = []
@@ -15,9 +21,11 @@ module.exports = function inject(bot, options) {
             stackedHologramsLoop:
             for (const group of stackedHolograms) {
                 for (const groupedHologramEntity of group) {
+                    const groupedHologramEntityPosition = bot.pattern.hologram.getPosition(groupedHologramEntity)
+                    const hologramEntityPosition = bot.pattern.hologram.getPosition(hologramEntity)
                     if (
-                        Math.abs(groupedHologramEntity.position.y - hologramEntity.position.y) <= 0.4 && // yDistance max 0.4 blocks
-                        groupedHologramEntity.position.xzDistanceTo(hologramEntity.position) <= 0.1 // xzDistance max 0.1 blocks
+                        Math.abs(groupedHologramEntityPosition.y - hologramEntityPosition.y) <= maxVerticalHologramSpacing &&
+                        groupedHologramEntityPosition.xzDistanceTo(hologramEntityPosition) <= maxXZSpacing
                     ) {
                         group.push(hologramEntity)
                         foundGroup = true
@@ -35,11 +43,11 @@ module.exports = function inject(bot, options) {
     }
 
     bot.pattern.hologram.sort = (stackedHolograms) => stackedHolograms.sort((a, b) => {
-        const aY = a.position.y
-        const bY = b.position.y
+        const aY = bot.pattern.hologram.getPosition(a).y
+        const bY = bot.pattern.hologram.getPosition(b).y
         const distance = bY - aY
 
-        return distance / 0.25 // 0.25 is the usual y distance between hologramEntities
+        return distance / defaultVerticalHologramSpacing // 0.25 is the usual y distance between hologramEntities
     })
 
     bot.pattern.hologram.extractText = (hologramEntities) => hologramEntities.map(bot.pattern.hologram.getNametag)
@@ -48,7 +56,7 @@ module.exports = function inject(bot, options) {
         Object.values(bot.entities)
             .filter(bot.pattern.hologram.isHologram)
             // sort by closest distance
-            .sort((a, b) => point.distanceTo(a.position) - point.distanceTo(b.position))
+            .sort((a, b) => point.distanceTo(bot.pattern.hologram.getPosition(a)) - point.distanceTo(bot.pattern.hologram.getPosition(b)))
 
     bot.pattern.hologram.match = (stackedHologramText, hologramPattern) => bot.pattern.matchArray(stackedHologramText, hologramPattern)
 
