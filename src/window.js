@@ -1,5 +1,12 @@
 // const EventEmitter = require('events')
 
+const surroundingsShorts = {
+    top: -9,
+    bottom: 9,
+    left: -1,
+    right: 1
+}
+
 module.exports = function inject(bot, options) {
     const ChatMessage = require('prismarine-chat')(bot.version)
 
@@ -9,18 +16,25 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.window.getTranslatedTitle = (window) => ChatMessage.fromNotch(window.title).toString()
 
-    bot.pattern.window.match = (title, windowPattern) => bot.pattern.match(title, windowPattern)
+    bot.pattern.window.matchTitle = (title, pattern) => bot.pattern.match(title, pattern)
 
-    bot.on('windowOpen', (window) => {
-        const title = bot.pattern.window.getTranslatedTitle(window)
-        const windowPatterns = bot.pattern.window.patterns
-        Object.keys(windowPatterns).forEach(windowPatternName => {
-            const windowPattern = windowPatterns[windowPatternName]
+    bot.pattern.window.match = bot.pattern.window.matchTitle
 
-            const windowTitleMatch = bot.pattern.window.match(title, windowPattern)
-            if (windowTitleMatch) {
-                bot.emit('windowOpen:' + windowPatternName, window, windowTitleMatch)
+    bot.pattern.window.matchSlotFormation = (window, slot, slotFormation) => {
+        let match = bot.pattern.item.match(slot, slotFormation.center)
+        let isMatching = match !== null
+        if (match) {
+            for (const surroundingKey in slotFormation.surroundings) {
+                const slotOffset = surroundingsShorts[surroundingKey] ?? +surroundingKey
+                const surroundingItemPattern = slotFormation.surroundings[surroundingKey]
+                const itemAtOffset = window.slots[slot.slot + slotOffset]
+                const surroundingItemMatch = bot.pattern.item.match(itemAtOffset, surroundingItemPattern)
+                if (!surroundingItemMatch) {
+                    isMatching = false
+                    break
+                }
             }
-        })
-    })
+        }
+        return isMatching ? match : null
+    }
 }
