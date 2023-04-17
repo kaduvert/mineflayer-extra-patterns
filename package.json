@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KadaverBrutalo10/mineflayer-extra-patterns.git"
+    "url": "git+https://github.com/kaduvert/mineflayer-extra-patterns.git"
   },
   "keywords": [
     "mineflayer",
@@ -17,9 +17,9 @@
   "author": "kaduvert",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/KadaverBrutalo10/mineflayer-extra-patterns/issues"
+    "url": "https://github.com/kaduvert/mineflayer-extra-patterns/issues"
   },
-  "homepage": "https://github.com/KadaverBrutalo10/mineflayer-extra-patterns#readme",
+  "homepage": "https://github.com/kaduvert/mineflayer-extra-patterns#readme",
   "dependencies": {
     "prismarine-chat": "^1.8.0"
   }
