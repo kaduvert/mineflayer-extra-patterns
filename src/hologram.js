@@ -11,7 +11,7 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.hologram.isHologram = (entity) => entity.objectType === 'Armor Stand' && bot.pattern.hologram.hasNametag(entity)
 
-    bot.pattern.hologram.getPosition = (entity) => entity.position.offset(0, entity.position.height, 0)
+    bot.pattern.hologram.getPosition = (entity) => entity.position.offset(0, entity.height, 0)
 
     bot.pattern.hologram.group = (hologramEntities) => {
         const stackedHolograms = []
