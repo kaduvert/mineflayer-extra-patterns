@@ -3,7 +3,7 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.item = {}
 
-    bot.pattern.item.matchDisplay = (stack, displayPattern) => bot.pattern.matchArray([stack.stackName, ...stack.stackLore], displayPattern)
+    bot.pattern.item.matchDisplay = (stack, displayPattern) => bot.pattern.matchArray([stack.stackName].concat(stack.stackLore), displayPattern)
 
     bot.pattern.item.match = bot.pattern.item.matchDisplay
 }
