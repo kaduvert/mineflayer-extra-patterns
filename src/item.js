@@ -11,4 +11,6 @@ module.exports = function inject(bot, options) {
             bot.pattern.item.matchDisplay(stack, pattern.display)
         )
     }
+
+    bot.pattern.item.findMatching = (window, pattern) => window.slots.find(stack => bot.pattern.item.match(stack, pattern))
 }
