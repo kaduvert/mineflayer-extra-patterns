@@ -1,13 +1,7 @@
-const PLUGINS_PATH = './'
-
-function getPlugin(name) {
-    return require(PLUGINS_PATH + name)
-}
-
 const plugins = [
-    getPlugin('hologram'),
-    getPlugin('window'),
-    getPlugin('item'),
+    require('./hologram'),
+    require('./window'),
+    require('./item'),
 ]
 
 module.exports = function inject(bot, options) {
