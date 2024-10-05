@@ -7,7 +7,8 @@ module.exports = function inject(bot, options) {
 
     bot.pattern.item.match = (stack, pattern) => {
         return (
-            (stack.name === undefined || stack.name === pattern.name) &&
+            stack &&
+            (pattern.name === undefined || stack.name === pattern.name) &&
             bot.pattern.item.matchDisplay(stack, pattern.display)
         )
     }
