@@ -5,9 +5,15 @@ const plugins = [
 ]
 
 module.exports = function inject(bot, options) {
+    const ChatMessage = require('prismarine-chat')(bot.version)
+
     bot.pattern = {}
 
-    bot.pattern.clearColorCodes = (str) => str?.replace(/§./g, '')
+    bot.pattern.clearColorCodes = (unknown) => (
+        (typeof unknown === 'string') ?
+        ChatMessage.fromNotch(unknown) :
+        (new ChatMessage(unknown))
+    ).toString()
 
     bot.pattern.match = (str, reg) => bot.pattern.clearColorCodes(str)?.match(reg)?.splice(1)
 
